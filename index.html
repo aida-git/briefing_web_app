@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="A&S Briefing">
+<meta name="theme-color" content="#1A1A2E">
+<title>A&S Briefing — Tonino Ferro · 22 giugno 2026</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── Desktop: show iPhone frame ── */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  background: #0a0a0a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+.device-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.device-label {
+  font-size: 11px;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.device {
+  width: 393px;
+  height: 852px;
+  background: #1c1c1e;
+  border-radius: 54px;
+  padding: 14px;
+  box-shadow:
+    0 0 0 1px #3a3a3c,
+    0 0 0 3px #1c1c1e,
+    0 0 0 4px #48484a,
+    0 40px 100px rgba(0,0,0,0.9),
+    0 0 60px rgba(0,0,0,0.5);
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* Dynamic island */
+.device::before {
+  content: '';
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 34px;
+  background: #0a0a0a;
+  border-radius: 0 0 22px 22px;
+  z-index: 20;
+}
+
+/* Side buttons */
+.device::after {
+  content: '';
+  position: absolute;
+  right: -3px;
+  top: 160px;
+  width: 3px;
+  height: 80px;
+  background: #3a3a3c;
+  border-radius: 0 2px 2px 0;
+  box-shadow: 0 110px 0 #3a3a3c;
+}
+
+.screen {
+  width: 100%;
+  height: 100%;
+  border-radius: 42px;
+  overflow: hidden;
+  background: #f2f2f7;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* ── Mobile: full screen, no frame ── */
+@media (max-width: 440px) {
+  body { background: #f2f2f7; display: block; min-height: 100vh; }
+  .device-wrap { display: block; }
+  .device-label { display: none; }
+  .device { width: 100%; height: auto; min-height: 100vh; border-radius: 0; padding: 0; box-shadow: none; background: transparent; }
+  .device::before, .device::after { display: none; }
+  .screen { border-radius: 0; height: auto; min-height: 100vh; }
+  .safari-bottom { position: fixed; bottom: 0; left: 0; right: 0; z-index: 100; }
+  #view-agenda, #view-detail { padding-bottom: 60px; }
+}
+
+/* ── OS Bar ── */
+.os-bar {
+  background: #1A1A2E;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 52px 22px 8px;
+  flex-shrink: 0;
+}
+.os-time { font-size: 15px; font-weight: 600; color: #fff; letter-spacing: -0.3px; }
+.os-icons { display: flex; gap: 6px; align-items: center; }
+.os-icons i { font-size: 15px; color: rgba(255,255,255,0.75); }
+
+/* ── Safari Chrome ── */
+.safari-top {
+  background: #f2f2f7;
+  border-bottom: 0.5px solid rgba(0,0,0,0.12);
+  flex-shrink: 0;
+}
+.url-bar {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 5px 10px 6px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 7px 12px;
+  border: 0.5px solid rgba(0,0,0,0.1);
+}
+.url-bar i { font-size: 13px; color: #34C759; }
+.url-text { font-size: 12px; color: #1c1c1e; flex: 1; }
+.url-domain { font-weight: 600; }
+.url-path { color: rgba(0,0,0,0.38); }
+.url-actions { display: flex; gap: 10px; }
+.url-actions i { font-size: 16px; color: rgba(0,0,0,0.38); }
+
+.pwa-banner {
+  background: #fff;
+  border-bottom: 0.5px solid rgba(0,0,0,0.08);
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.pwa-icon { width: 30px; height: 30px; border-radius: 7px; background: #1A1A2E; display: flex; align-items: center; justify-content: center; }
+.pwa-icon i { font-size: 16px; color: #C8A96E; }
+.pwa-title { font-size: 12px; font-weight: 600; color: #1c1c1e; }
+.pwa-sub { font-size: 10px; color: rgba(0,0,0,0.4); }
+.pwa-add { font-size: 12px; font-weight: 600; color: #007AFF; padding: 4px 10px; border: 0.5px solid rgba(0,122,255,0.3); border-radius: 7px; white-space: nowrap; cursor: pointer; flex-shrink: 0; }
+
+/* ── Page content ── */
+.page-wrap { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+.view { display: none; flex-direction: column; height: 100%; }
+.view.active { display: flex; }
+
+/* ── Top Bar ── */
+.top-bar { background: #1A1A2E; padding: 12px 16px 14px; flex-shrink: 0; }
+.as-logo { font-size: 10px; letter-spacing: 0.14em; color: #C8A96E; text-transform: uppercase; font-weight: 600; margin-bottom: 3px; }
+.as-date { font-size: 11px; color: rgba(255,255,255,0.38); margin-bottom: 10px; }
+.agent-row { display: flex; align-items: center; gap: 10px; }
+.av { width: 32px; height: 32px; border-radius: 50%; background: rgba(200,169,110,0.18); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #C8A96E; flex-shrink: 0; }
+.agent-name { font-size: 14px; font-weight: 600; color: #fff; }
+.agent-sub { font-size: 11px; color: rgba(255,255,255,0.38); }
+
+/* ── Agenda ── */
+.agenda-scroll { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.agenda-scroll::-webkit-scrollbar { display: none; }
+.agenda-body { padding: 14px 14px 4px; }
+.sec-label { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #C8A96E; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+.sec-label::after { content:''; flex:1; height:0.5px; background:rgba(200,169,110,0.25); }
+
+.appt-card { background: #fff; border: 0.5px solid rgba(0,0,0,0.1); border-radius: 14px; margin-bottom: 10px; overflow: hidden; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: opacity .1s; }
+.appt-card:active { opacity: 0.7; }
+.appt-head { display: flex; align-items: center; gap: 12px; padding: 12px 14px; }
+.appt-head.is-next { border-left: 3px solid #C8A96E; }
+.time-col { text-align: center; min-width: 36px; flex-shrink: 0; }
+.time-hr { font-size: 15px; font-weight: 700; color: #1c1c1e; }
+.time-min { font-size: 11px; color: rgba(0,0,0,0.4); }
+.vdiv { width: 0.5px; height: 36px; background: rgba(0,0,0,0.1); flex-shrink: 0; }
+.appt-main { flex: 1; min-width: 0; }
+.appt-co { font-size: 13px; font-weight: 600; color: #1c1c1e; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.appt-det { font-size: 11px; color: rgba(0,0,0,0.45); margin-top: 1px; }
+.next-badge { font-size: 10px; font-weight: 700; background: rgba(200,169,110,0.15); color: #854F0B; padding: 3px 9px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; }
+.appt-ai { background: rgba(200,169,110,0.05); border-top: 0.5px solid rgba(200,169,110,0.15); padding: 9px 14px; display: flex; align-items: center; justify-content: space-between; }
+.appt-ai span { font-size: 11px; color: #854F0B; font-weight: 500; }
+.appt-ai i { font-size: 14px; color: #C8A96E; }
+
+/* ── Detail ── */
+.co-header { background: #1A1A2E; padding: 10px 16px 13px; flex-shrink: 0; }
+.back-row { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.back-row span { font-size: 12px; color: rgba(255,255,255,0.4); }
+.back-row i { font-size: 18px; color: rgba(255,255,255,0.4); }
+.co-switcher { display: flex; gap: 6px; margin-bottom: 11px; }
+.co-pill { font-size: 11px; font-weight: 600; padding: 5px 12px; border-radius: 20px; cursor: pointer; white-space: nowrap; border: 0.5px solid rgba(255,255,255,0.14); color: rgba(255,255,255,0.38); background: transparent; -webkit-tap-highlight-color: transparent; transition: all .15s; }
+.co-pill.active { background: rgba(200,169,110,0.2); color: #C8A96E; border-color: rgba(200,169,110,0.4); }
+.co-name { font-size: 17px; font-weight: 700; color: #fff; line-height: 1.2; }
+.co-sub { font-size: 12px; color: rgba(200,169,110,0.6); margin-top: 2px; }
+.co-meta { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+.co-time-b { font-size: 11px; color: rgba(200,169,110,0.9); background: rgba(200,169,110,0.12); padding: 3px 10px; border-radius: 20px; font-weight: 600; }
+.co-ph { font-size: 12px; color: rgba(255,255,255,0.35); display: flex; align-items: center; gap: 4px; }
+
+.tab-bar { display: flex; background: #141428; border-bottom: 0.5px solid rgba(200,169,110,0.15); flex-shrink: 0; }
+.d-tab { flex: 1; text-align: center; padding: 10px 4px; font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.25); letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer; border-bottom: 2.5px solid transparent; -webkit-tap-highlight-color: transparent; transition: color .12s; }
+.d-tab.active { color: #C8A96E; border-bottom-color: #C8A96E; }
+
+.detail-scroll { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; background: #f2f2f7; }
+.detail-scroll::-webkit-scrollbar { display: none; }
+.tab-body { padding: 14px 14px 20px; }
+.d-panel { display: none; }
+.d-panel.active { display: block; }
+
+/* ── KPIs ── */
+.kpi-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 9px; margin-bottom: 14px; }
+.kpi { background: #fff; border-radius: 10px; padding: 11px 13px; }
+.kl { font-size: 10px; color: rgba(0,0,0,0.45); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 4px; }
+.kv { font-size: 19px; font-weight: 700; color: #1c1c1e; line-height: 1; }
+.kv.down { color: #993C1D; }
+.kv.up { color: #3B6D11; }
+.kd { font-size: 11px; color: rgba(0,0,0,0.4); margin-top: 3px; }
+
+/* ── Section labels ── */
+.dsec { font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #C8A96E; margin: 14px 0 8px; display: flex; align-items: center; gap: 6px; }
+.dsec::after { content:''; flex:1; height:0.5px; background:rgba(200,169,110,0.25); }
+
+/* ── Info rows ── */
+.irow { display: flex; justify-content: space-between; align-items: baseline; padding: 8px 0; border-bottom: 0.5px solid rgba(0,0,0,0.07); gap: 10px; }
+.irow:last-child { border-bottom: none; }
+.ik { font-size: 12px; color: rgba(0,0,0,0.45); flex-shrink: 0; }
+.iv { font-size: 12px; font-weight: 600; color: #1c1c1e; text-align: right; }
+.iv a { color: #007AFF; text-decoration: none; }
+
+/* ── Alerts ── */
+.alert { border-left: 3px solid #C8A96E; background: rgba(200,169,110,0.07); border-radius: 0 10px 10px 0; padding: 10px 12px; margin-bottom: 9px; }
+.alert.warn { border-left-color: #BA7517; background: rgba(186,117,23,0.07); }
+.alert.ok   { border-left-color: #3B6D11; background: rgba(59,109,17,0.07); }
+.alert.info { border-left-color: #378ADD; background: rgba(55,138,221,0.07); }
+.at { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: #854F0B; margin-bottom: 4px; }
+.at.ok   { color: #3B6D11; }
+.at.info { color: #185FA5; }
+.atxt { font-size: 13px; color: #1c1c1e; line-height: 1.55; }
+
+/* ── Social chips ── */
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.chip { display: flex; align-items: center; gap: 5px; padding: 5px 10px; border-radius: 20px; font-size: 11px; border: 0.5px solid rgba(0,0,0,0.12); color: rgba(0,0,0,0.45); }
+.chip.on { color: #0C447C; border-color: #B5D4F4; background: #E6F1FB; }
+.chip.off { opacity: 0.38; }
+.chip i { font-size: 13px; }
+.stars { color: #C8A96E; font-size: 14px; letter-spacing: 1px; }
+
+/* ── Action bar ── */
+.action-bar { display: flex; gap: 10px; padding: 10px 14px 12px; background: #f2f2f7; border-top: 0.5px solid rgba(0,0,0,0.1); position: sticky; bottom: 0; flex-shrink: 0; }
+.act-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 7px; padding: 13px; border-radius: 13px; font-size: 14px; font-weight: 700; text-decoration: none; border: none; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: opacity .1s; }
+.act-btn:active { opacity: 0.7; }
+.act-primary   { background: #1A1A2E; color: #C8A96E; }
+.act-secondary { background: #fff; color: #1c1c1e; border: 0.5px solid rgba(0,0,0,0.14); }
+
+/* ── Safari bottom bar ── */
+.safari-bottom { background: #f2f2f7; border-top: 0.5px solid rgba(0,0,0,0.12); padding: 9px 24px 6px; display: flex; align-items: center; justify-content: space-around; flex-shrink: 0; }
+.safari-bottom i { font-size: 22px; color: #007AFF; }
+.safari-bottom i.dim { color: rgba(0,0,0,0.22); }
+.home-ind { height: 28px; background: #f2f2f7; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.home-bar { width: 130px; height: 5px; background: rgba(0,0,0,0.16); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<div class="device-wrap">
+  <div class="device-label">Andrew &amp; Sax · Briefing PWA — Tonino Ferro · 22 giugno 2026</div>
+  <div class="device">
+    <div class="screen">
+
+      <div class="os-bar">
+        <span class="os-time">13:55</span>
+        <div class="os-icons">
+          <i class="ti ti-wifi"></i>
+          <i class="ti ti-battery-2"></i>
+        </div>
+      </div>
+
+      <div class="safari-top">
+        <div class="url-bar">
+          <i class="ti ti-lock"></i>
+          <div class="url-text">
+            <span class="url-domain">briefing.andrewsax.it</span><span class="url-path" id="url-path">/ferro/2026-06-22</span>
+          </div>
+          <div class="url-actions">
+            <i class="ti ti-refresh"></i>
+            <i class="ti ti-share"></i>
+          </div>
+        </div>
+        <div class="pwa-banner">
+          <div class="pwa-icon"><i class="ti ti-briefcase"></i></div>
+          <div style="flex:1">
+            <div class="pwa-title">A&amp;S Briefing</div>
+            <div class="pwa-sub">Aggiungi alla schermata home</div>
+          </div>
+          <div class="pwa-add">+ Aggiungi</div>
+        </div>
+      </div>
+
+      <div class="page-wrap">
+
+        <!-- AGENDA -->
+        <div class="view active" id="view-agenda">
+          <div class="top-bar">
+            <div class="as-logo">Andrew &amp; Sax · Briefing</div>
+            <div class="as-date">Lunedì 22 giugno 2026</div>
+            <div class="agent-row">
+              <div class="av">TF</div>
+              <div>
+                <div class="agent-name">Tonino Ferro</div>
+                <div class="agent-sub">2 appuntamenti oggi · Provincia di Genova</div>
+              </div>
+            </div>
+          </div>
+          <div class="agenda-scroll">
+            <div class="agenda-body">
+              <div class="sec-label">Appuntamenti</div>
+
+              <div class="appt-card" onclick="openDetail(0)">
+                <div class="appt-head is-next">
+                  <div class="time-col"><div class="time-hr">14</div><div class="time-min">:30</div></div>
+                  <div class="vdiv"></div>
+                  <div class="appt-main">
+                    <div class="appt-co">Officine S.A.M.A.</div>
+                    <div class="appt-det">Carasco (GE) · Serramenti alta qualità · 6 dip.</div>
+                  </div>
+                  <div class="next-badge">Prossimo</div>
+                </div>
+                <div class="appt-ai">
+                  <span><i class="ti ti-sparkles" style="font-size:11px;margin-right:4px"></i>Pass. gen. completato · Dipendenza bonus edilizi</span>
+                  <i class="ti ti-chevron-right"></i>
+                </div>
+              </div>
+
+              <div class="appt-card" onclick="openDetail(1)">
+                <div class="appt-head">
+                  <div class="time-col"><div class="time-hr">17</div><div class="time-min">:00</div></div>
+                  <div class="vdiv"></div>
+                  <div class="appt-main">
+                    <div class="appt-co">Genova Ricambi SRL</div>
+                    <div class="appt-det">Bolzaneto (GE) · Distribuzione ricambi auto · 4 sedi</div>
+                  </div>
+                </div>
+                <div class="appt-ai">
+                  <span><i class="ti ti-sparkles" style="font-size:11px;margin-right:4px"></i>CRIBIS Prime · Scale-up attivo · GroupAuto</span>
+                  <i class="ti ti-chevron-right"></i>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- DETAIL -->
+        <div class="view" id="view-detail">
+          <div class="co-header">
+            <div class="back-row" onclick="goBack()">
+              <i class="ti ti-arrow-left"></i>
+              <span>Agenda del giorno</span>
+            </div>
+            <div class="co-switcher">
+              <div class="co-pill active" id="pill-0" onclick="switchCo(0)">14:30 · SAMA</div>
+              <div class="co-pill" id="pill-1" onclick="switchCo(1)">17:00 · Ricambi</div>
+            </div>
+            <div class="co-name" id="co-name-h"></div>
+            <div class="co-sub" id="co-sub-h"></div>
+            <div class="co-meta">
+              <div class="co-time-b" id="co-time-h"></div>
+              <div class="co-ph"><i class="ti ti-phone" style="font-size:12px"></i><span id="co-ph-h"></span></div>
+            </div>
+          </div>
+
+          <div class="tab-bar">
+            <div class="d-tab active" onclick="switchTab('info',this)">Info</div>
+            <div class="d-tab" onclick="switchTab('numeri',this)">Numeri</div>
+            <div class="d-tab" onclick="switchTab('digital',this)">Digital</div>
+            <div class="d-tab" onclick="switchTab('ai',this)">AI</div>
+          </div>
+
+          <div class="detail-scroll">
+            <div class="tab-body">
+              <div class="d-panel active" id="p-info"></div>
+              <div class="d-panel" id="p-numeri"></div>
+              <div class="d-panel" id="p-digital"></div>
+              <div class="d-panel" id="p-ai"></div>
+            </div>
+          </div>
+
+          <div class="action-bar">
+            <a class="act-btn act-primary" id="act-call" href="#">
+              <i class="ti ti-phone" style="font-size:16px"></i>Chiama
+            </a>
+            <a class="act-btn act-secondary" id="act-nav" href="#" target="_blank">
+              <i class="ti ti-map-pin" style="font-size:16px"></i>Naviga
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="safari-bottom">
+        <i class="ti ti-arrow-left dim"></i>
+        <i class="ti ti-arrow-right dim"></i>
+        <i class="ti ti-share"></i>
+        <i class="ti ti-books"></i>
+        <i class="ti ti-layout-grid"></i>
+      </div>
+      <div class="home-ind"><div class="home-bar"></div></div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+const cos = [
+  {
+    name: "Officine S.A.M.A.",
+    sub: "Serramenti & infissi alta qualità · Carasco (GE)",
+    time: "14:30",
+    phone: "0185 350856",
+    url: "/ferro/2026-06-22/1",
+    nav: "https://maps.google.com/?q=Via+Statale+1+Carasco+GE",
+    kpis: [
+      {l:"Fatturato stimato", v:"< 250K", d:"ditta individuale", c:""},
+      {l:"Dipendenti",        v:"6",      d:"organico stabile",  c:""},
+      {l:"Fondazione",        v:"1973",   d:"52 anni di storia", c:""},
+      {l:"Sede prod.",        v:"700 mq", d:"fabbrica Carasco",  c:""}
+    ],
+    anag: [
+      {k:"Ragione sociale", v:"Officine S.A.M.A. di Cademartori Fabio"},
+      {k:"P.IVA",           v:"00021270996"},
+      {k:"Fabbrica",        v:"Via Statale 1, Carasco (GE)"},
+      {k:"Showroom",        v:"Via E. Riboli 8, Lavagna (GE)"},
+      {k:"ATECO",           v:"25.12 – Serramenti in alluminio"},
+      {k:"Sito",            v:"officinesama.it", link:"https://www.officinesama.it"},
+      {k:"Email",           v:"info@officinesama.it"}
+    ],
+    soc: [
+      {k:"Fondatore",         v:"Italo Cademartori (1973)"},
+      {k:"Attuale titolare",  v:"Fabio Cademartori (figlio)"},
+      {k:"Pass. generazionale",v:"Già avvenuto con successo"},
+      {k:"Forma giuridica",   v:"Ditta individuale / SRL"}
+    ],
+    fin: [
+      {t:"info", title:"Dati finanziari limitati",    txt:"Ditta individuale: bilanci non pubblici. Fatturato stimato <€250K da dimensione organico (6 addetti) e attività di nicchia premium."},
+      {t:"ok",   title:"Solidità e continuità",       txt:"52 anni di attività ininterrotta nella stessa sede. Il passaggio da Italo a Fabio Cademartori è già avvenuto — segnale di maturità gestionale."},
+      {t:"warn", title:"Settore sensibile ai bonus",  txt:"Il mercato serramenti è stato trainato da Ecobonus e Superbonus. La stretta fiscale 2026 potrebbe creare pressione sulla domanda nel breve periodo."}
+    ],
+    socials: [
+      {name:"Sito",      icon:"ti-world",           on:true,  note:"Professionale, aggiornato, preventivi online"},
+      {name:"Facebook",  icon:"ti-brand-facebook",  on:true,  note:"552 follower, post attivi"},
+      {name:"Houzz",     icon:"ti-star",            on:true,  note:"Profilo attivo, nessuna recensione pubblica"},
+      {name:"Instagram", icon:"ti-brand-instagram", on:false, note:"Non identificato"},
+      {name:"LinkedIn",  icon:"ti-brand-linkedin",  on:false, note:"Non presente"}
+    ],
+    stars: 0,
+    rep: "Nessuna recensione Google pubblica. Reputazione locale consolidata in 52 anni di attività. Collaborazioni con studi di architettura e interior designer citate sul sito.",
+    web: "Sito professionale (officinesama.it) con catalogo prodotti completo, sezione detrazioni fiscali 2026 aggiornata, video aziendale e form preventivi. Ottimizzato per la normativa attuale.",
+    briefing: [
+      {t:"info",  title:"Passaggio gen. già completato", txt:"Fabio ha già preso le redini dal padre Italo. Non è un tema aperto ma un asset. Potrebbe non avere ancora una visione manageriale strutturata."},
+      {t:"warn",  title:"Dipendenza dai bonus edilizi",  txt:"Il sito ha una sezione dedicata alle detrazioni 2026: l'azienda è consapevole del tema. Domanda chiave: «Come sta gestendo l'acquisizione clienti post-Superbonus?»"},
+      {t:"ok",    title:"Apertura consigliata",          txt:"Valorizzare i 52 anni di storia e la qualità del prodotto, poi: «Con un'azienda così solida e un mercato che cambia, come sta strutturando le prossime mosse?»"},
+      {t:"info",  title:"Opportunità",                   txt:"6 persone tra fabbrica e showroom: complessità operativa gestita probabilmente in modo intuitivo. Controllo di gestione per commessa potrebbe essere molto rilevante."}
+    ]
+  },
+  {
+    name: "Genova Ricambi SRL",
+    sub: "Distribuzione ricambi auto · Bolzaneto (GE)",
+    time: "17:00",
+    phone: "010 711754",
+    url: "/ferro/2026-06-22/2",
+    nav: "https://maps.google.com/?q=Via+Romairone+42+Bolzaneto+Genova",
+    kpis: [
+      {l:"Sedi operative", v:"4",         d:"GE · Albenga · Savona · Val Bisagno", c:""},
+      {l:"Magazzino tot.", v:"2.950 mq",  d:"totale 4 sedi",                        c:"up"},
+      {l:"Esperienza",     v:"30+ anni",  d:"nel settore ricambi",                  c:""},
+      {l:"CRIBIS",         v:"Prime",     d:"riconoscimento 2023",                  c:"up"}
+    ],
+    anag: [
+      {k:"Ragione sociale", v:"Genova Ricambi SRL"},
+      {k:"P.IVA",           v:"02155410992"},
+      {k:"REA",             v:"GE-464331"},
+      {k:"Cap. sociale",    v:"€ 40.000 int. versato"},
+      {k:"Sede principale", v:"Via Romairone 42, Bolzaneto (GE)"},
+      {k:"Sito",            v:"genovaricambi.it", link:"https://www.genovaricambi.it"},
+      {k:"Email",           v:"amministrazione@genovaricambi.it"}
+    ],
+    soc: [
+      {k:"Titolare",     v:"Roberto Balbi"},
+      {k:"Struttura",    v:"SRL — presumibilmente familiare"},
+      {k:"Network",      v:"GroupAuto Italia (membro attivo)"},
+      {k:"Ex-consorzio", v:"Uscito da AssoRicambi (2024)"}
+    ],
+    fin: [
+      {t:"warn", title:"Dati finanziari non pubblici",  txt:"SRL: bilanci non accessibili gratuitamente. La dimensione (4 sedi, 2.950 mq, 4+ consegne/giorno) suggerisce un fatturato nell'ordine di €3M–€8M."},
+      {t:"ok",   title:"CRIBIS Prime Company 2023",     txt:"Riconoscimento di affidabilità creditizia di alto livello. Segnale di solidità finanziaria e puntualità nei pagamenti."},
+      {t:"info", title:"Espansione attiva",             txt:"Nuova filiale in Val Bisagno (4a sede). Ingresso in GroupAuto Italia (346M€ di fatturato aggregato del consorzio). Azienda in chiara fase di scale-up."}
+    ],
+    socials: [
+      {name:"Sito",      icon:"ti-world",           on:true,  note:"Doppio e-commerce: carrozzeria + meccanica"},
+      {name:"LinkedIn",  icon:"ti-brand-linkedin",  on:true,  note:"Profilo aziendale attivo"},
+      {name:"Facebook",  icon:"ti-brand-facebook",  on:false, note:"Non identificato"},
+      {name:"Instagram", icon:"ti-brand-instagram", on:false, note:"Non presente"}
+    ],
+    stars: 0,
+    rep: "Nessuna recensione Google pubblica. Azienda B2B pura: reputazione nella rete di officine e carrozzerie clienti. Il riconoscimento CRIBIS Prime 2023 è il segnale reputazionale più significativo sul mercato.",
+    web: "Sito professionale (genovaricambi.it) con due e-commerce separati (ricambi carrozzeria e meccanica), blog aziendale attivo con news recenti su GroupAuto, eventi e riconoscimenti. Tra le presenze digitali più evolute nel settore.",
+    briefing: [
+      {t:"ok",   title:"Cliente in forte espansione",   txt:"4 sedi, nuova filiale aperta, ingresso in GroupAuto: Roberto Balbi sta scalando attivamente. È probabilmente in un momento in cui l'organizzazione interna fatica a stare al passo con la crescita."},
+      {t:"warn", title:"Complessità gestionale",        txt:"4 magazzini in 3 province, 4+ giri consegna al giorno, doppio e-commerce: coordinare tutto senza strumenti manageriali evoluti è il classico collo di bottiglia dello scale-up."},
+      {t:"ok",   title:"Apertura consigliata",          txt:"«Con la nuova filiale in Val Bisagno e l'ingresso in GroupAuto, come sta gestendo il coordinamento tra le 4 sedi? Ha una visione unica di tutti i magazzini?»"},
+      {t:"info", title:"Leva GroupAuto",                txt:"GroupAuto richiede standard operativi precisi ai soci. È un'apertura naturale verso strutturazione processi e KPI — il cliente è già in un ecosistema che lo spinge in quella direzione."}
+    ]
+  }
+];
+
+let curCo = 0;
+let curTab = 'info';
+
+function aHtml(a) {
+  const cls = a.t==='warn'?'warn':a.t==='ok'?'ok':'info';
+  const tc  = a.t==='ok'?'ok':a.t==='info'?'info':'';
+  return `<div class="alert ${cls}"><div class="at ${tc}">${a.title}</div><div class="atxt">${a.txt}</div></div>`;
+}
+
+function renderHeader() {
+  const co = cos[curCo];
+  document.getElementById('co-name-h').textContent = co.name;
+  document.getElementById('co-sub-h').textContent  = co.sub;
+  document.getElementById('co-time-h').textContent = co.time;
+  document.getElementById('co-ph-h').textContent   = co.phone;
+  document.getElementById('url-path').textContent  = co.url;
+  document.getElementById('act-call').href = 'tel:' + co.phone.replace(/[\s]/g,'');
+  document.getElementById('act-nav').href  = co.nav;
+  [0,1].forEach(i => document.getElementById('pill-'+i).classList.toggle('active', i===curCo));
+}
+
+function renderTabs() {
+  const co = cos[curCo];
+
+  document.getElementById('p-info').innerHTML =
+    `<div class="kpi-grid">${co.kpis.map(k=>`<div class="kpi"><div class="kl">${k.l}</div><div class="kv ${k.c}">${k.v}</div><div class="kd">${k.d}</div></div>`).join('')}</div>
+    <div class="dsec">Anagrafica</div>
+    ${co.anag.map(r=>`<div class="irow"><span class="ik">${r.k}</span><span class="iv">${r.link?`<a href="${r.link}" target="_blank">${r.v} <i class="ti ti-external-link" style="font-size:11px"></i></a>`:r.v}</span></div>`).join('')}
+    <div class="dsec">Assetto</div>
+    ${co.soc.map(r=>`<div class="irow"><span class="ik">${r.k}</span><span class="iv">${r.v}</span></div>`).join('')}`;
+
+  document.getElementById('p-numeri').innerHTML = co.fin.map(a=>aHtml(a)).join('');
+
+  const s = co.stars > 0 ? '★'.repeat(Math.round(co.stars))+'☆'.repeat(5-Math.round(co.stars)) : '—';
+  document.getElementById('p-digital').innerHTML =
+    `<div class="dsec">Canali attivi</div>
+    <div class="chips">${co.socials.map(c=>`<div class="chip ${c.on?'on':'off'}"><i class="ti ${c.icon}"></i>${c.name}</div>`).join('')}</div>
+    <div style="margin-top:12px">${co.socials.map(c=>`<div style="font-size:12px;color:rgba(0,0,0,0.5);margin-bottom:4px"><strong style="color:#1c1c1e">${c.name}:</strong> ${c.note}</div>`).join('')}</div>
+    <div class="dsec" style="margin-top:14px">Reputazione</div>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span class="stars">${s}</span><span style="font-size:12px;color:rgba(0,0,0,0.45)">${co.stars>0?co.stars+'/5':'Nessuna recensione pubblica'}</span></div>
+    <p style="font-size:13px;color:#1c1c1e;line-height:1.6;margin-bottom:14px">${co.rep}</p>
+    <div class="dsec">Sito web</div>
+    <p style="font-size:13px;color:#1c1c1e;line-height:1.6">${co.web}</p>`;
+
+  document.getElementById('p-ai').innerHTML = co.briefing.map(a=>aHtml(a)).join('');
+}
+
+function switchCo(idx) {
+  curCo = idx;
+  renderHeader();
+  renderTabs();
+  document.querySelector('.detail-scroll').scrollTop = 0;
+}
+
+function switchTab(name, el) {
+  document.querySelectorAll('.d-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.d-panel').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('p-'+name).classList.add('active');
+  curTab = name;
+}
+
+function openDetail(idx) {
+  curCo = idx;
+  curTab = 'info';
+  document.querySelectorAll('.d-tab').forEach((t,i)=>t.classList.toggle('active',i===0));
+  document.querySelectorAll('.d-panel').forEach((p,i)=>p.classList.toggle('active',i===0));
+  renderHeader();
+  renderTabs();
+  document.getElementById('view-agenda').classList.remove('active');
+  document.getElementById('view-detail').classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function goBack() {
+  document.getElementById('view-detail').classList.remove('active');
+  document.getElementById('view-agenda').classList.add('active');
+  document.getElementById('url-path').textContent = '/ferro/2026-06-22';
+  window.scrollTo(0,0);
+}
+</script>
+
+</body>
+</html>
